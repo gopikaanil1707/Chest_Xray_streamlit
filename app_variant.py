@@ -132,8 +132,17 @@ try:
 
     @st.cache_resource
     def load_model(model_path):
-        """Load the trained model"""
+        """Load the trained model from local path or Hugging Face"""
         try:
+            # Check if it's a URL (Hugging Face)
+            if model_path.startswith('http'):
+                import urllib.request
+                st.info("Downloading model from Hugging Face... This may take a moment.")
+                # Download the model
+                local_path = "downloaded_model.pth"
+                urllib.request.urlretrieve(model_path, local_path)
+                model_path = local_path
+            
             checkpoint = torch.load(model_path, map_location=device)
             num_classes = checkpoint['num_classes']
             class_names = checkpoint['class_names']
@@ -222,7 +231,7 @@ try:
         st.header("⚙️ Settings")
         model_path = st.text_input(
             "Model Path",
-            value= r'C:\Users\HP\Downloads\resnet50_chest_xray_classifier_improved.pth',
+            value="resnet50_chest_xray_classifier_improved.pth",
             help="Path to the trained model file (.pth)"
         )
         
@@ -290,11 +299,11 @@ try:
         
         if uploaded_file is not None and image is not None:
             try:
-                # Check if model file exists
+                # Check if model file exists (for local files)
                 import os
-                if not os.path.exists(model_path):
+                if not model_path.startswith('http') and not os.path.exists(model_path):
                     st.error(f"❌ Model file not found: {model_path}")
-                    st.info("Please check the sidebar and update the model path.")
+                    st.info("Please check the sidebar and update the model path or select Hugging Face option.")
                 else:
                     # Load model
                     with st.spinner("Loading model..."):
