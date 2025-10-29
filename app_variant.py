@@ -231,7 +231,7 @@ try:
         st.header("⚙️ Settings")
         model_path = st.text_input(
             "Model Path",
-            value="resnet50_chest_xray_classifier_improved.pth",
+            value="https://huggingface.co/Gopikaanill1707/Chest_Xray/resolve/main/resnet50_chest_xray_classifier_improved.pth",
             help="Path to the trained model file (.pth)"
         )
         
@@ -475,3 +475,4 @@ except Exception as e:
     st.error(f"The application encountered a critical error: {str(e)}")
     st.code(traceback.format_exc())
     st.info("Please check your Python environment and ensure all dependencies are installed correctly.")
+
